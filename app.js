@@ -1,29 +1,38 @@
-import { createContext, useContext, useEffect, useRef } from "react";
-import io from "socket.io-client";
+import * as Font from "expo-font";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AuthProvider } from "./src/context/AuthContext";
+import AppNavigator from "./src/navigation/AppNavigator";
+import { socket } from "./src/utils/socket";
 
-const SocketContext = createContext(null);
-export const useSocket = () => useContext(SocketContext);
+export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
-export const SocketProvider = ({ children }) => {
-  const socketRef = useRef(null);
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
+      "Poppins-Bold": require("./assets/fonts/Poppins-Bold.ttf"),
+      Inter: require("./assets/fonts/Inter-Regular.ttf"),
+      "Inter-Bold": require("./assets/fonts/Inter-Bold.ttf"),
+    });
+    setFontsLoaded(true);
+  };
 
   useEffect(() => {
-    socketRef.current = io("https://universe-mq1h.onrender.com");
-
-    socketRef.current.on("connect", () =>
-      console.log("🟢 Connected to UniVerse socket server")
-    );
-
-    socketRef.current.on("disconnect", () =>
-      console.log("🔴 Disconnected from socket server")
-    );
-
-    return () => socketRef.current.disconnect();
+    loadFonts();
+    socket.connect();
+    return () => socket.disconnect();
   }, []);
 
+  if (!fontsLoaded) return null;
+
   return (
-    <SocketContext.Provider value={socketRef.current}>
-      {children}
-    </SocketContext.Provider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <AppNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
-};
+}
