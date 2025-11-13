@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import api from "../../api/axios";
-import { useSocket } from "../../context/SocketContext";
 import { formatName } from "../../utils/formatName";
+import { useSocket } from "../../utils/socket";
 import CommunityCard from "./CommunityCard";
 
 export default function CommunityList() {

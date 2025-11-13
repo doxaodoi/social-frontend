@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
 import api from "../../api/axios";
-import { useSocket } from "../../context/SocketContext";
+import { useSocket } from "../../utils/socket";
 
 const CommunityDetails = ({ route }) => {
   const { community: initialCommunity } = route.params;
